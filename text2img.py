@@ -77,9 +77,7 @@ class Text2ImageGenerator(FileReader, CommandReader, TextReader):
 
     def __init__(self, **properties):
         self.prop.update(properties)
-        self.font = ImageFont.truetype(self.prop["font_path"], 
-                                       self.prop["font_size"])
-        self.font = ImageFont.truetype()
+        self.font = ImageFont.load_default()
     
     def _generate_img(self):
         self.line_height = self.font.getsize(self.text)[1]
