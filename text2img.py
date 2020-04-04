@@ -54,7 +54,7 @@ class Text2ImageGenerator(FileReader, CommandReader, TextReader):
     left_pad = 3
     right_pad = 5
     font_size = 14
-    font_path = "~/projects/Test-Report-Automation-Project/fonts/Hack-Regular.ttf"
+    font_path = "~/projects/Test-Report-Automation-Project/fonts/arial.ttf"
     width = 200
     height = 500
     img_fname = "image.png"
@@ -69,7 +69,7 @@ class Text2ImageGenerator(FileReader, CommandReader, TextReader):
         "left_pad" : 3,
         "right_pad" : 50,
         "font_size" : 14,
-        "font_path" : "~/projects/Test-Report-Automation-Project/fonts/Hack-Regular.ttf",
+        "font_path" : "~/projects/Test-Report-Automation-Project/fonts/arial.ttf",
         "width" : 200,
         "height" : 500,
         "img_fname" : "image.png"
@@ -79,6 +79,7 @@ class Text2ImageGenerator(FileReader, CommandReader, TextReader):
         self.prop.update(properties)
         self.font = ImageFont.truetype(self.prop["font_path"], 
                                        self.prop["font_size"])
+        self.font = ImageFont.truetype()
     
     def _generate_img(self):
         self.line_height = self.font.getsize(self.text)[1]
