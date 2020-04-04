@@ -69,7 +69,7 @@ class Text2ImageGenerator(FileReader, CommandReader, TextReader):
         "left_pad" : 3,
         "right_pad" : 50,
         "font_size" : 14,
-        "font_path" : "/home/reljod/projects/Test-Report-Automation-Project/fonts/Hack-Regular.ttf",
+        "font_path" : "~/projects/Test-Report-Automation-Project/fonts/Hack-Regular.ttf",
         "width" : 200,
         "height" : 500,
         "img_fname" : "image.png"
