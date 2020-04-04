@@ -8,11 +8,8 @@ from sys import argv
 
 
 class CommandReader:
-    def __init__(self, command):
-        self.command = command
-
-    def get_cmd_output(self):
-        stat_out = getstatusoutput(self.command)
+    def get_cmd_output(self, command):
+        stat_out = getstatusoutput(command)
         if self._cmd_error_report(stat_out):
             return stat_out[1]
         return ""
@@ -25,16 +22,21 @@ class CommandReader:
 
 
 class FileReader:
-    def __init__(self, file_path):
-        self.file_path = file_path
 
-    def read_file(self):
-        with open(self.file_path, 'r') as fp:
+    def read_file(self, file_path):
+        with open(file_path, 'r') as fp:
             file_text = fp.readlines()
         return file_text
 
 
-class Text2ImageGenerator(FileReader, CommandReader):
+class TextReader:
+    def __init__(self, text):
+        self.text = text
+        self.text_list = text.split('\n')
+        self.num_lines = len(self.text_list)
+        self.max_width_line = max(self.text_list, key = lambda s: len(s))
+
+class Text2ImageGenerator(FileReader, CommandReader, TextReader):
     prop = {
         "bg_color" : "#000",
         "text_color" : "#FFF",
@@ -43,65 +45,55 @@ class Text2ImageGenerator(FileReader, CommandReader):
         "font_size" : 14,
         "font_path" : "/home/reljod/projects/Test-Report-Automation-Project/fonts/Hack-Regular.ttf",
         "width" : 200,
-        "height" : 500
+        "height" : 500,
+        "img_fname" : "image.png"
     }
 
     def __init__(self, **properties):
         self.prop.update(properties)
-        if "file_path" in properties.keys():
-            file_path = properties["file_path"]
-            FileReader.__init__(self, file_path)
-
-        if "command" in properties.keys():
-            command = properties["command"]
-            CommandReader.__init__(self, command)
-        
-
         self.font = ImageFont.truetype(self.prop["font_path"], 
                                        self.prop["font_size"])
-        
-
-    def generate(self, text):
-        text_list = text.split('\n')
-        num_lines = len(text_list)
-
-        max_width_line = max(text_list, key = lambda s: len(s))
-
-        line_height = self.font.getsize(text)[1]
-
-        img_height = line_height * num_lines
-        img_width = self.font.getsize(max_width_line)[0] + self.prop["right_pad"]
+    
+    def _generate_img(self):
+        self.line_height = self.font.getsize(self.text)[1]
+        img_height = self.line_height * self.num_lines
+        img_width = self.font.getsize(self.max_width_line)[0] + self.prop["right_pad"]
 
         img = Image.new("RGBA", (img_width, img_height), self.prop["bg_color"])
-        draw = ImageDraw.Draw(img)
+        return img
 
+    def _draw_image(self, img):
+        draw = ImageDraw.Draw(img)
         y = 0
-        for line in text_list:
+        for line in self.text_list:
             draw.text((self.prop["left_pad"], y),
                        line, 
                        self.prop["text_color"],
                        font=self.font)
-            y += line_height
+            y += self.line_height
+        return img
 
-        self.save_image(img, "image.png")
-        self.copy_image_src_to_dir("image.png", "/mnt/c/users/Reljod/Desktop/image.png")
+    def generate_from_text(self, text):
+        TextReader.__init__(self, text)
+        img = self._generate_img()
+        img = self._draw_image(img)
+        self.save_image(img)
+        
 
 
-    def generate_from_file(self):
-        text_file = self.read_file()
-        self.generate(text_file)
+    def generate_from_file(self, file_path):
+        text_file = self.read_file(file_path)
+        self.generate_from_text(text_file)
 
-    def generate_from_command(self):
-        text_command = self.get_cmd_output()
-        self.generate(text_command)
+    def generate_from_command(self, command):
+        text_command = self.get_cmd_output(command)
+        self.generate_from_text(text_command)
 
-    def save_image(self, image, image_path):
-        image.save(image_path)
-
-    def copy_image_src_to_dir(self, source_path, target_path):
-        copyfile(source_path, target_path)
+    def save_image(self, image):
+        image.save(self.prop["img_fname"])
 
 
 if __name__ == "__main__":
-    t2i = Text2ImageGenerator(command='cat subproc_text2img.py')  
-    t2i.generate_from_command()  
+    t2i = Text2ImageGenerator(font_size=1_000, bg_color="#F00")  
+    t2i.generate_from_command("echo Reljod")
+    copyfile(t2i.prop["img_fname"], "/mnt/c/users/Reljod/Desktop/image.png")
