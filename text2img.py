@@ -31,7 +31,7 @@ class FileReader:
 
     def read_file(self, file_path):
         with open(file_path, 'r') as fp:
-            file_text = fp.readlines()
+            file_text = fp.read()
         return file_text
 
 
