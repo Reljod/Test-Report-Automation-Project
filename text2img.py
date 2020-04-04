@@ -1,3 +1,9 @@
+"""
+Author: Reljod T. Oreta
+Date created: April 4, 2020
+
+Description: To convert text from command or file to Image.
+"""
 
 from PIL import Image
 from PIL import ImageDraw
@@ -38,6 +44,25 @@ class TextReader:
 
 
 class Text2ImageGenerator(FileReader, CommandReader, TextReader):
+    """
+    Author: Reljod T. Oreta
+
+    Default values:
+
+    bg_color = #000
+    text_color = #FFF
+    left_pad = 3
+    right_pad = 5
+    font_size = 14
+    font_path = "/home/reljod/projects/Test-Report-Automation-Project/fonts/Hack-Regular.ttf"
+    width = 200
+    height = 500
+    img_fname = "image.png"
+
+    Change these value by initializing by different parameters:
+    t2i = Text2ImageGenerator(bg_color="#FFF", text_color="#000")
+
+    """
     prop = {
         "bg_color" : "#000",
         "text_color" : "#FFF",
