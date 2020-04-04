@@ -36,6 +36,7 @@ class TextReader:
         self.num_lines = len(self.text_list)
         self.max_width_line = max(self.text_list, key = lambda s: len(s))
 
+
 class Text2ImageGenerator(FileReader, CommandReader, TextReader):
     prop = {
         "bg_color" : "#000",
@@ -78,8 +79,6 @@ class Text2ImageGenerator(FileReader, CommandReader, TextReader):
         img = self._generate_img()
         img = self._draw_image(img)
         self.save_image(img)
-        
-
 
     def generate_from_file(self, file_path):
         text_file = self.read_file(file_path)
@@ -94,6 +93,9 @@ class Text2ImageGenerator(FileReader, CommandReader, TextReader):
 
 
 if __name__ == "__main__":
+    target_path = "/mnt/c/users/Reljod/Desktop/"
+
     t2i = Text2ImageGenerator(font_size=1_000, bg_color="#F00")  
-    t2i.generate_from_command("echo Reljod")
-    copyfile(t2i.prop["img_fname"], "/mnt/c/users/Reljod/Desktop/image.png")
+    t2i.generate_from_command("echo Imelda")
+    img_fname = t2i.prop["img_fname"]
+    copyfile(img_fname, target_path + img_fname)
