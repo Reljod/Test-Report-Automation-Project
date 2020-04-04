@@ -103,7 +103,7 @@ class Text2ImageGenerator(FileReader, CommandReader, TextReader):
         TextReader.__init__(self, text)
         img = self._generate_img()
         img = self._draw_image(img)
-        self.save_image(img)
+        self.image = img
 
     def generate_from_file(self, file_path):
         text_file = self.read_file(file_path)
@@ -113,8 +113,8 @@ class Text2ImageGenerator(FileReader, CommandReader, TextReader):
         text_command = self.get_cmd_output(command)
         self.generate_from_text(text_command)
 
-    def save_image(self, image):
-        image.save(self.prop["img_fname"])
+    def save_image(self):
+        self.image.save(self.prop["img_fname"])
 
 
 if __name__ == "__main__":
